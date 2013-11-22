@@ -182,10 +182,17 @@
     <Content Include="Dsl\tfs\sendtemplatedemail.py">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Dsl\scripting\twolibraries.py">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="packages.config" />
     <None Include="Project.snk" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Sample.Dsl\Sample.Dsl.csproj">
+      <Project>{5e6306ba-fc3e-406d-9086-4c93eefb710b}</Project>
+      <Name>Sample.Dsl</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TFSEventsProcessor.Dsl\TFSEventsProcessor.Dsl.csproj">
       <Project>{5f027e3c-e7af-4e89-901c-5ef3f0f464a7}</Project>
       <Name>TFSEventsProcessor.Dsl</Name>

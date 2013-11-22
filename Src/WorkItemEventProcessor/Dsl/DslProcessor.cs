@@ -10,8 +10,10 @@ using NLog;
 
 namespace TFSEventsProcessor.Dsl
 {
+    using System.Collections;
     using System.ComponentModel.Composition;
     using System.ComponentModel.Composition.Hosting;
+    using System.Linq;
 
     /// <summary>
     /// Contains the DSL API
@@ -26,8 +28,8 @@ namespace TFSEventsProcessor.Dsl
         /// <summary>
         /// The variable to bind the MEF loaded DSL object
         /// </summary>
-        [Import(typeof(IDslLibrary))]
-        private IDslLibrary dslLibrary = null;
+        [ImportMany(typeof(IDslLibrary))]
+        private IEnumerable<IDslLibrary> dslLibraries = null;
 
         /// <summary>
         /// Runs a named Pyphon script that uses the DSL
@@ -68,7 +70,7 @@ namespace TFSEventsProcessor.Dsl
             if (scriptname == null)
             {
                 throw new ArgumentNullException("scriptname");
-            } 
+            }
             else
             {
                 if (string.IsNullOrEmpty(scriptFolder))
@@ -114,10 +116,18 @@ namespace TFSEventsProcessor.Dsl
             //An aggregate catalog that combines multiple catalogs
             var catalog = new AggregateCatalog();
             //Adds all the parts found in the same assembly as the Program class
-            this.logger.Info(string.Format(
-                  "TFSEventsProcessor: DslProcessor loading DSL from :{0}",
-                  Path.GetFullPath(".")));
-            catalog.Catalogs.Add(new DirectoryCatalog(dslFolder));
+            if (Directory.Exists(dslFolder))
+            {
+                this.logger.Info(
+                    string.Format("TFSEventsProcessor: DslProcessor loading DSL from {0}", Path.GetFullPath(dslFolder)));
+                catalog.Catalogs.Add(new DirectoryCatalog(dslFolder));
+            }
+            else
+            {
+                this.logger.Error(
+                    string.Format("TFSEventsProcessor: DslProcessor cannot find DSL folder {0}", Path.GetFullPath(dslFolder)));
+                return;
+            }
 
             //Create the CompositionContainer with the parts in the catalog
             var container = new CompositionContainer(catalog);
@@ -132,30 +142,41 @@ namespace TFSEventsProcessor.Dsl
                 return;
             }
 
-            // inject the providers
-            this.dslLibrary.EmailProvider = iEmailProvider;
-            this.dslLibrary.TfsProvider = iTfsProvider;
-            this.dslLibrary.EventXml = eventXml;
-            this.dslLibrary.ScriptFolder = scriptFolder;
-
-            // create the engine
-            var engine = IronPython.Hosting.Python.CreateEngine(args);
-            var objOps = engine.Operations;
-            var scope = engine.CreateScope();
-
-            // Read in the methods
-            foreach (string memberName in objOps.GetMemberNames(this.dslLibrary))
+            if (this.dslLibraries.Any())
             {
-                scope.SetVariable(memberName, objOps.GetMember(this.dslLibrary, memberName));
+                // create the engine
+                var engine = IronPython.Hosting.Python.CreateEngine(args);
+                var objOps = engine.Operations;
+                var scope = engine.CreateScope();
+
+                // inject the providers
+                foreach (var item in this.dslLibraries)
+                {
+                    item.EmailProvider = iEmailProvider;
+                    item.TfsProvider = iTfsProvider;
+                    item.EventXml = eventXml;
+                    item.ScriptFolder = scriptFolder;
+
+                    // Read in the methods
+                    foreach (string memberName in objOps.GetMemberNames(item))
+                    {
+                        scope.SetVariable(memberName, objOps.GetMember(item, memberName));
+                    }
+                }
+
+                // run the script
+                this.logger.Info(string.Format(
+                      "TFSEventsProcessor: DslProcessor running script:{0}",
+                      scriptname));
+                var script = engine.CreateScriptSourceFromFile(scriptname);
+                script.Execute(scope);
             }
-
-
-            // run the script
-            this.logger.Info(string.Format(
-                  "TFSEventsProcessor: DslProcessor running script:{0}",
-                  scriptname));
-            var script = engine.CreateScriptSourceFromFile(scriptname);
-            script.Execute(scope);
+            else
+            {
+                this.logger.Error(
+                    string.Format("TFSEventsProcessor: DslProcessor cannot find DSL libraries in folder {0}", Path.GetFullPath(dslFolder)));
+                return;
+            }
 
         }
     }

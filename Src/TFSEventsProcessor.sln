@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TFSEventsProcessor.Dsl", "T
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TFSEventsProcessor.Tests", "WorkItemEventProcessor.Tests\TFSEventsProcessor.Tests.csproj", "{16C638AA-5129-4C1C-B0D5-D5E0EAB6B1BF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample.Dsl", "Sample.Dsl\Sample.Dsl.csproj", "{5E6306BA-FC3E-406D-9086-4C93EEFB710B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{16C638AA-5129-4C1C-B0D5-D5E0EAB6B1BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{16C638AA-5129-4C1C-B0D5-D5E0EAB6B1BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{16C638AA-5129-4C1C-B0D5-D5E0EAB6B1BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E6306BA-FC3E-406D-9086-4C93EEFB710B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E6306BA-FC3E-406D-9086-4C93EEFB710B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E6306BA-FC3E-406D-9086-4C93EEFB710B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E6306BA-FC3E-406D-9086-4C93EEFB710B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
