@@ -5,7 +5,10 @@ using Microsoft.QualityTools.Testing.Fakes;
 
 namespace TFSEventsProcessor.Tests.Dsl
 {
+    using System.Linq;
+
     using Microsoft.TeamFoundation.Build.Client;
+    using Microsoft.TeamFoundation.Client;
     using Microsoft.TeamFoundation.WorkItemTracking.Client.Fakes;
     using Microsoft.TeamFoundation.VersionControl.Client.Fakes;
 
@@ -174,5 +177,6 @@ namespace TFSEventsProcessor.Tests.Dsl
         }
 
 
+       
     }
 }

@@ -14,6 +14,8 @@ using System;
 namespace TFSEventsProcessor.Dsl
 {
     using System.ComponentModel.Composition;
+    using System.Globalization;
+
     using TFSEventsProcessor.Helpers;
     using TFSEventsProcessor.Providers;
 
@@ -281,5 +283,72 @@ namespace TFSEventsProcessor.Dsl
         {
             return this.scriptFolder;
         }
+
+        /// <summary>
+        /// Gets argument field in a build process definition.
+        /// </summary>
+        /// <param name="buildUri">The URI of the build instance</param>
+        /// <param name="argumentName">The field to return</param>
+        /// <returns>The argument value</returns>
+        public object GetBuildArgument(string buildUri, string argumentName)
+        {
+            var build = this.GetBuildDetails(buildUri);
+            return this.iTfsProvider.GetBuildArgument(build.BuildDefinitionUri, argumentName);
+        }
+
+
+        /// <summary>
+        /// Gets version number a build process definition.
+        /// </summary>
+        /// <param name="buildUri">The URI of the build instance</param>
+        /// <returns>The version value</returns>
+        public string GetVersionNumber(string buildUri)
+        {
+            var build = this.GetBuildDetails(buildUri);
+            return string.Format(
+                "{0}.{1}.0.x", 
+                this.iTfsProvider.GetBuildArgument(build.BuildDefinitionUri, "MajorVersion"),
+                this.iTfsProvider.GetBuildArgument(build.BuildDefinitionUri, "MinorVersion"));
+        }
+
+        /// <summary>
+        /// Sets argument field in a build process definition.
+        /// </summary>
+        /// <param name="buildUri">The URI of the build instance</param>
+        /// <param name="argumentName">The field to return</param>
+        /// <param name="value">The value to set</param>
+        public void SetBuildArgument(string buildUri, string argumentName, object value)
+        {
+            var build = this.GetBuildDetails(buildUri);
+            this.iTfsProvider.SetBuildArgument(build.BuildDefinitionUri, argumentName, value);
+        }
+
+       /// <summary>
+       /// Increment a string argument field in a build process definition.
+       /// This can be used to raise a version number when some event occurs
+       /// </summary>
+       /// <param name="buildUri">The URI of the build instance</param>
+        public void IncrementBuildNumber(string buildUri)
+       {
+           var build = this.GetBuildDetails(buildUri);
+
+           var argumentName = "MinorVersion";
+           var value = this.TfsProvider.GetBuildArgument(build.BuildDefinitionUri, argumentName);
+
+           // as we are incrementing we need to treat this an Int
+           // the most likey field to be updating is on for the TFSVersion activity which
+           // stores the values as strings, so we need to parse it
+           var number = -1;
+           if (value != null)
+           {
+               int.TryParse(value.ToString(), out number);
+           }
+           number++;
+
+           this.TfsProvider.SetBuildArgument(build.BuildDefinitionUri, argumentName, number.ToString(CultureInfo.InvariantCulture));
+
+           // we also use the start date so this should be reset start date
+           this.TfsProvider.SetBuildArgument(build.BuildDefinitionUri, "VersionStartDate", DateTime.Today);
+       }
     }
 }

@@ -43,6 +43,17 @@ namespace TFSEventsProcessor.Providers
         /// <summary>
         /// Creates an instance of the class used to communicate with TFS
         /// </summary>
+        /// <param name="serverUri">The server address</param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2201:DoNotRaiseReservedExceptionTypes", Justification = "Cannot build if use a more limited exception")]
+        public TfsProvider(Uri serverUri)
+        {
+            // Instantiate a reference to the TFS Project Collection
+            this.TfsInstance = new TfsTeamProjectCollection(serverUri);
+        }
+
+        /// <summary>
+        /// Creates an instance of the class used to communicate with TFS
+        /// </summary>
         /// <param name="tfsIdentityXml">The TFS security details</param>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2201:DoNotRaiseReservedExceptionTypes",Justification="Want to avoid lost ecaptions")]
         public void UnpackIdentity(string tfsIdentityXml)
@@ -161,7 +172,7 @@ namespace TFSEventsProcessor.Providers
         /// <returns>The build details</returns>
         public IBuildDetail GetBuildDetails(Uri buildUri)
         {
-            logger.Info(string.Format("TfsHelper: Getting the build [{0}]", buildUri));
+            logger.Info(string.Format("Getting the build [{0}]", buildUri));
             var service = (IBuildServer)this.TfsInstance.GetService(typeof(IBuildServer));
             return service.GetBuild(buildUri);
     
@@ -174,13 +185,92 @@ namespace TFSEventsProcessor.Providers
         /// <returns>The changeset</returns>
         public Changeset GetChangeSet(int id)
         {
-            logger.Info(string.Format("TfsHelper: Getting the changeset [{0}]", id));
+            logger.Info(string.Format("Getting the changeset [{0}]", id));
   
             var versionControl = (VersionControlServer)this.TfsInstance.GetService(typeof(VersionControlServer));
             return versionControl.GetChangeset(id);
             
         }
 
-       
+        /// <summary>
+        /// Get a parameter argument from a TFS build
+        /// </summary>
+        /// <param name="buildDefUri">The Uri of the build definition</param>
+        /// <param name="key">The arguement name</param>
+        /// <returns>The value of the argument</returns>
+        public object GetBuildArgument(Uri buildDefUri, string key)
+        {
+            var process = this.GetAllBuildArguments(buildDefUri);
+
+            logger.Info(string.Format("Getting build argument [{0}] for build definition [{1}]", key, buildDefUri.ToString()));
+
+            if (process.ContainsKey(key) == true)
+            {
+                return process[key];
+            }
+            else
+            {
+                return null;
+            }
+            
+        }
+
+        /// <summary>
+        /// Get all parameter argument from a TFS build
+        /// </summary>
+        /// <param name="buildDefUri">The Uri of the build definition</param>
+        /// <returns>The value of the argument</returns>
+        public IDictionary<string, object> GetAllBuildArguments(Uri buildDefUri)
+        {
+            logger.Info(string.Format("Getting build arguments for build definition [{0}]", buildDefUri.ToString()));
+
+            var service = (IBuildServer)this.TfsInstance.GetService(typeof(IBuildServer));
+            var def = service.GetBuildDefinition(buildDefUri);
+            return Microsoft.TeamFoundation.Build.Workflow.WorkflowHelpers.DeserializeProcessParameters(def.ProcessParameters);
+        }
+
+        /// <summary>
+        /// Set a parameter argument from a TFS build
+        /// </summary>
+        /// <param name="buildDefUri">The Uri of the build definition</param>
+        /// <param name="key">The arguement name</param>
+        /// <param name="value">The value to set</param>
+        public void SetBuildArgument(Uri buildDefUri, string key, object value)
+        {
+            logger.Info(string.Format("Setting build argument [{0}] for build definition [{1}] to [{2}]", key, buildDefUri.ToString(), value.ToString()));
+
+            var service = (IBuildServer)this.TfsInstance.GetService(typeof(IBuildServer));
+        
+            var def = service.GetBuildDefinition(buildDefUri);
+            var process = Microsoft.TeamFoundation.Build.Workflow.WorkflowHelpers.DeserializeProcessParameters(def.ProcessParameters);
+
+            if (process.ContainsKey(key) == true)
+            {
+                process[key] = value;
+            }
+            else
+            {
+                process.Add(key, value);
+            }
+
+            def.ProcessParameters = Microsoft.TeamFoundation.Build.Workflow.WorkflowHelpers.SerializeProcessParameters(process);
+            def.Save();
+        }
+
+
+        /// <summary>
+        /// Returns all the build results for a team project
+        /// </summary>
+        /// <param name="teamProjectName">The team project name</param>
+        /// <returns>The build results</returns>
+        public IBuildDetail[] GetAllBuilds(string teamProjectName)
+        {
+            logger.Info(string.Format("Getting all builds in TP [{0}]", teamProjectName));
+
+            var service = (IBuildServer)this.TfsInstance.GetService(typeof(IBuildServer));
+
+            return service.QueryBuilds(teamProjectName);
+        }
+        
     }
 }

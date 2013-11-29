@@ -103,6 +103,41 @@
             }
         }
 
+        [Test]
+        public void Can_use_Dsl_to_increment_build_argument()
+        {
+            // arrange
+            var buildUri = new Uri("vstfs:///Build/Build/123");
+            var buildDefUri = new Uri("vstfs:///Build/Build/XYZ");
+
+            var emailProvider = new Moq.Mock<IEmailProvider>();
+            var build = new Moq.Mock<IBuildDetail>();
+            build.Setup(b => b.Uri).Returns(buildUri);
+            build.Setup(b => b.Quality).Returns("Released");
+            build.Setup(b => b.BuildDefinitionUri).Returns(buildDefUri);
+            build.Setup(b => b.BuildDefinition.Name).Returns("Build Def");
+
+            var tfsProvider = new Moq.Mock<ITfsProvider>();
+            tfsProvider.Setup(t => t.GetBuildDetails(It.IsAny<Uri>())).Returns(build.Object);
+            tfsProvider.Setup(t => t.GetBuildArgument(It.IsAny<Uri>(), "MajorVersion")).Returns(1);
+            tfsProvider.Setup(t => t.GetBuildArgument(It.IsAny<Uri>(), "MinorVersion")).Returns(6);
+            tfsProvider.Setup(t => t.GetBuildArgument(It.IsAny<Uri>(), "MinorVersion")).Returns(7); // used for the second call
+      
+            var engine = new TFSEventsProcessor.Dsl.DslProcessor();
+
+            var args = new Dictionary<string, object>
+            {
+                { "Arguments", new[] { "BuildEvent", "vstfs:///Build/Build/123" } },
+            };
+
+            // act
+            engine.RunScript(@"dsl\tfs\incrementbuildargument.py", args, tfsProvider.Object, emailProvider.Object);
+
+            // assert
+
+            emailProvider.Verify(e => e.SendEmailAlert("richard@typhoontfs", "Build Def version incremented", "'Build Def' version incremented to 1.7.0.x as last build quality set to 'Released'"));
+
+        }
 
     }
 }

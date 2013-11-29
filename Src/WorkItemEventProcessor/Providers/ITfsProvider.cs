@@ -62,5 +62,35 @@ namespace TFSEventsProcessor.Providers
         /// <param name="id">Changeset ID</param>
         /// <returns>The changeset</returns>
         Changeset GetChangeSet(int id);
+
+        /// <summary>
+        /// Get a parameter argument from a TFS build
+        /// </summary>
+        /// <param name="buildDefUri">The Uri of the build definition</param>
+        /// <param name="key">The arguement name</param>
+        /// <returns>The value of the argument</returns>
+        object GetBuildArgument(Uri buildDefUri, string key);
+
+        /// <summary>
+        /// Set a parameter argument from a TFS build
+        /// </summary>
+        /// <param name="buildDefUri">The Uri of the build definition</param>
+        /// <param name="key">The arguement name</param>
+        /// <param name="value">The value to set</param>
+        void SetBuildArgument(Uri buildDefUri, string key, object value);
+
+        /// <summary>
+        /// Returns all the build results for a team project
+        /// </summary>
+        /// <param name="teamProjectName">The team project name</param>
+        /// <returns>The build results</returns>
+        IBuildDetail[] GetAllBuilds(string teamProjectName);
+
+        /// <summary>
+        /// Get all parameter argument from a TFS build
+        /// </summary>
+        /// <param name="buildDefUri">The Uri of the build definition</param>
+        /// <returns>The value of the argument</returns>
+        IDictionary<string, object> GetAllBuildArguments(Uri buildDefUri);
     }
 }
