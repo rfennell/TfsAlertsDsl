@@ -102,6 +102,16 @@ namespace TFSEventsProcessor.Providers
         }
 
         /// <summary>
+        /// Updates a work work item
+        /// </summary>
+        /// <param name="wi">The work item</param>
+        public void UpdateWorkItem(WorkItem wi)
+        {
+            var store = (WorkItemStore)this.TfsInstance.GetService(typeof(WorkItemStore));
+            store.BatchSave(new WorkItem[] {wi});
+        }
+
+        /// <summary>
         /// Returns the parent work item of the work item with the specified id. When it has no parent, null is returned.
         /// </summary>
         /// <param name="id">The work item ID</param>

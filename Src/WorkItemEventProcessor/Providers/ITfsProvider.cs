@@ -92,5 +92,11 @@ namespace TFSEventsProcessor.Providers
         /// <param name="buildDefUri">The Uri of the build definition</param>
         /// <returns>The value of the argument</returns>
         IDictionary<string, object> GetAllBuildArguments(Uri buildDefUri);
+
+        /// <summary>
+        /// Updates a work work item
+        /// </summary>
+        /// <param name="wi">The work item</param>
+        void UpdateWorkItem(WorkItem wi);
     }
 }

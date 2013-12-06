@@ -122,7 +122,8 @@
             tfsProvider.Setup(t => t.GetBuildArgument(It.IsAny<Uri>(), "MajorVersion")).Returns(1);
             tfsProvider.Setup(t => t.GetBuildArgument(It.IsAny<Uri>(), "MinorVersion")).Returns(6);
             tfsProvider.Setup(t => t.GetBuildArgument(It.IsAny<Uri>(), "MinorVersion")).Returns(7); // used for the second call
-      
+            tfsProvider.Setup(t => t.GetBuildArgument(It.IsAny<Uri>(), "VersionStartDate")).Returns("1 Jan 2012");
+            
             var engine = new TFSEventsProcessor.Dsl.DslProcessor();
 
             var args = new Dictionary<string, object>
@@ -135,7 +136,7 @@
 
             // assert
 
-            emailProvider.Verify(e => e.SendEmailAlert("richard@typhoontfs", "Build Def version incremented", "'Build Def' version incremented to 1.7.0.x as last build quality set to 'Released'"));
+            emailProvider.Verify(e => e.SendEmailAlert("richard@typhoontfs", "Build Def version incremented", "'Build Def' version incremented to 1.7.[days since 1 Jan 2012].[build count] as last build quality set to 'Released'"));
 
         }
 

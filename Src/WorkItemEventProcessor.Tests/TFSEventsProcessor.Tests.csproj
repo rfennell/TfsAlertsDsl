@@ -194,6 +194,9 @@
     <Content Include="Dsl\tfs\incrementbuildargument.py">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Dsl\tfs\updatewi.py">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="packages.config" />
     <None Include="Project.snk" />
   </ItemGroup>

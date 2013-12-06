@@ -235,6 +235,15 @@ namespace TFSEventsProcessor.Dsl
         }
 
         /// <summary>
+        /// Updates a work item
+        /// </summary>
+        /// <param name="wi">The work item to save</param>
+        public void UpdateWorkItem(WorkItem wi)
+        {
+            this.iTfsProvider.UpdateWorkItem(wi);
+        }
+
+        /// <summary>
         /// Send an email 
         /// </summary>
         /// <param name="to">To address</param>
@@ -306,9 +315,10 @@ namespace TFSEventsProcessor.Dsl
         {
             var build = this.GetBuildDetails(buildUri);
             return string.Format(
-                "{0}.{1}.0.x", 
+                "{0}.{1}.[days since {2}].[build count]", 
                 this.iTfsProvider.GetBuildArgument(build.BuildDefinitionUri, "MajorVersion"),
-                this.iTfsProvider.GetBuildArgument(build.BuildDefinitionUri, "MinorVersion"));
+                this.iTfsProvider.GetBuildArgument(build.BuildDefinitionUri, "MinorVersion"),
+                this.iTfsProvider.GetBuildArgument(build.BuildDefinitionUri, "VersionStartDate").ToString());
         }
 
         /// <summary>

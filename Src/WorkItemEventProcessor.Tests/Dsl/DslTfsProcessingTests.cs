@@ -9,6 +9,7 @@ namespace TFSEventsProcessor.Tests.Dsl
 
     using Microsoft.TeamFoundation.Build.Client;
     using Microsoft.TeamFoundation.Client;
+    using Microsoft.TeamFoundation.WorkItemTracking.Client;
     using Microsoft.TeamFoundation.WorkItemTracking.Client.Fakes;
     using Microsoft.TeamFoundation.VersionControl.Client.Fakes;
 
@@ -100,11 +101,51 @@ namespace TFSEventsProcessor.Tests.Dsl
                 engine.RunScript(@"dsl\tfs\createwi.py", tfsProvider.Object, emailProvider.Object);
 
                 // assert
-              Assert.AreEqual(
+                tfsProvider.Verify(t => t.CreateWorkItem("tp",
+                      "Bug",
+                      new Dictionary<string, object>()
+                    {
+                        {"Title", "The Title"},
+                        {"Estimate", 2}
+                    }));
+              
+                Assert.AreEqual(
                  "Work item '99' has been created with the title 'Title'" + Environment.NewLine,
                  consoleOut.ToString());
             }
         }
+
+        [Test]
+        public void Can_use_Dsl_to_update_a_work_item()
+        {
+
+            using (ShimsContext.Create())
+            {
+                // arrange
+                // redirect the console
+                var consoleOut = Helpers.Logging.RedirectConsoleOut();
+
+                var wi = new ShimWorkItem() { TitleGet = () => "Title", IdGet = () => 99 };
+                var emailProvider = new Moq.Mock<IEmailProvider>();
+                var tfsProvider = new Moq.Mock<ITfsProvider>();
+                tfsProvider.Setup(t => t.CreateWorkItem(
+                    "tp",
+                    "Bug",
+                    new Dictionary<string, object>()
+                    {
+                        {"Title", "The Title"},
+                        {"Estimate", 2}
+                    })).Returns(wi);
+                var engine = new TFSEventsProcessor.Dsl.DslProcessor();
+
+                // act
+                engine.RunScript(@"dsl\tfs\updatewi.py", tfsProvider.Object, emailProvider.Object);
+
+                // assert
+                tfsProvider.Verify(t => t.UpdateWorkItem(It.IsAny<WorkItem>()));
+            }
+        }
+
 
         [Test]
         public void Can_pass_realistic_build_arguments_to_script()
@@ -175,7 +216,6 @@ namespace TFSEventsProcessor.Tests.Dsl
                 consoleOut.ToString());
 
         }
-
 
        
     }
