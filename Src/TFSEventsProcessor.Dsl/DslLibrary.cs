@@ -264,7 +264,7 @@ namespace TFSEventsProcessor.Dsl
         /// <param name="showMissingFieldNames">If true adds error messages for incorrect field names</param>
         public void SendEmail(int workItemId, string templatePath, bool dumpAllWorkItemFields, bool dumpAllAlertFields, bool showMissingFieldNames)
         {
-            
+
             // Get this list of changes
             var alertItems = EventXmlHelper.GetWorkItemChangedAlertFields(this.eventXml);
             var changedBy = EventXmlHelper.GetChangedBy(this.eventXml);
@@ -315,7 +315,7 @@ namespace TFSEventsProcessor.Dsl
         {
             var build = this.GetBuildDetails(buildUri);
             return string.Format(
-                "{0}.{1}.[days since {2}].[build count]", 
+                "{0}.{1}.[days since {2}].[build count]",
                 this.iTfsProvider.GetBuildArgument(build.BuildDefinitionUri, "MajorVersion"),
                 this.iTfsProvider.GetBuildArgument(build.BuildDefinitionUri, "MinorVersion"),
                 this.iTfsProvider.GetBuildArgument(build.BuildDefinitionUri, "VersionStartDate").ToString());
@@ -333,17 +333,19 @@ namespace TFSEventsProcessor.Dsl
             this.iTfsProvider.SetBuildArgument(build.BuildDefinitionUri, argumentName, value);
         }
 
-       /// <summary>
-       /// Increment a string argument field in a build process definition.
-       /// This can be used to raise a version number when some event occurs
-       /// </summary>
-       /// <param name="buildUri">The URI of the build instance</param>
+        /// <summary>
+        /// Increment a string argument field in a build process definition.
+        /// This can be used to raise a version number when some event occurs
+        /// </summary>
+        /// <param name="buildUri">The URI of the build instance</param>
         public void IncrementBuildNumber(string buildUri)
        {
            var build = this.GetBuildDetails(buildUri);
 
            var argumentName = "MinorVersion";
            var value = this.TfsProvider.GetBuildArgument(build.BuildDefinitionUri, argumentName);
+
+           LogInfoMessage(string.Format("Arguement {0} old value is {1}", argumentName, value.ToString()));
 
            // as we are incrementing we need to treat this an Int
            // the most likey field to be updating is on for the TFSVersion activity which
@@ -354,6 +356,8 @@ namespace TFSEventsProcessor.Dsl
                int.TryParse(value.ToString(), out number);
            }
            number++;
+
+           LogInfoMessage(string.Format("Updated argument {0} value is {1}", argumentName, number));
 
            this.TfsProvider.SetBuildArgument(build.BuildDefinitionUri, argumentName, number.ToString(CultureInfo.InvariantCulture));
 
