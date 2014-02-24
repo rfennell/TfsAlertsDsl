@@ -137,6 +137,7 @@ namespace TFSEventsProcessor.Providers
 
                         using (var client = new SmtpClient(this.smptServer))
                         {
+                            client.Credentials = CredentialCache.DefaultNetworkCredentials;
                             client.Send(msg);
                         }
 
