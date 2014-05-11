@@ -55,7 +55,7 @@ namespace TFSEventsProcessor.Providers
         /// Creates an instance of the class used to communicate with TFS
         /// </summary>
         /// <param name="tfsIdentityXml">The TFS security details</param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2201:DoNotRaiseReservedExceptionTypes",Justification="Want to avoid lost ecaptions")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2201:DoNotRaiseReservedExceptionTypes", Justification = "Want to avoid lost ecaptions")]
         public void UnpackIdentity(string tfsIdentityXml)
         {
             //Get the url from the tfsIdentity xml. 
@@ -102,13 +102,55 @@ namespace TFSEventsProcessor.Providers
         }
 
         /// <summary>
+        /// Returns the parent work item with the specified work item
+        /// </summary>
+        /// <param name="wi">The work item</param>
+        /// <returns>The parent work item</returns>
+        public WorkItem GetParentWorkItem(WorkItem wi)
+        {
+            var store = (WorkItemStore)this.TfsInstance.GetService(typeof(WorkItemStore));
+            var parentLinkTypeEnd = store.WorkItemLinkTypes.LinkTypeEnds["Parent"];
+            WorkItem parentItem = null;
+            foreach (WorkItemLink link in wi.WorkItemLinks)
+            {
+                if (link.LinkTypeEnd.Id == parentLinkTypeEnd.Id)
+                {
+                    parentItem = this.GetWorkItem(link.TargetId);
+                }
+            }
+
+            return parentItem;
+        }
+
+        /// <summary>
+        /// Returns the child work items with the specified work item
+        /// </summary>
+        /// <param name="wi">The work item</param>
+        /// <returns>The parent work item</returns>
+        public WorkItem[] GetChildWorkItems(WorkItem wi)
+        {
+            var store = (WorkItemStore)this.TfsInstance.GetService(typeof(WorkItemStore));
+            var childLinkTypeEnd = store.WorkItemLinkTypes.LinkTypeEnds["Child"];
+            List<WorkItem> childItems = new List<WorkItem>();
+            foreach (WorkItemLink link in wi.WorkItemLinks)
+            {
+                if (link.LinkTypeEnd.Id == childLinkTypeEnd.Id)
+                {
+                    childItems.Add(this.GetWorkItem(link.TargetId));
+                }
+            }
+
+            return childItems.ToArray();
+        }
+
+        /// <summary>
         /// Updates a work work item
         /// </summary>
         /// <param name="wi">The work item</param>
         public void UpdateWorkItem(WorkItem wi)
         {
             var store = (WorkItemStore)this.TfsInstance.GetService(typeof(WorkItemStore));
-            store.BatchSave(new WorkItem[] {wi});
+            store.BatchSave(new WorkItem[] { wi });
         }
 
         /// <summary>
@@ -159,7 +201,7 @@ namespace TFSEventsProcessor.Providers
                 throw new ArgumentNullException("witName");
             }
 
-            if (fields==null)
+            if (fields == null)
             {
                 throw new ArgumentNullException("fields");
             }
@@ -167,7 +209,7 @@ namespace TFSEventsProcessor.Providers
             var store = (WorkItemStore)this.TfsInstance.GetService(typeof(WorkItemStore));
             var wit = store.Projects[teamproject].WorkItemTypes[witName];
             var wi = new WorkItem(wit);
-            foreach( var pair in fields)
+            foreach (var pair in fields)
             {
                 wi.Fields[pair.Key].Value = pair.Value;
             }
@@ -185,7 +227,7 @@ namespace TFSEventsProcessor.Providers
             logger.Info(string.Format("Getting the build [{0}]", buildUri));
             var service = (IBuildServer)this.TfsInstance.GetService(typeof(IBuildServer));
             return service.GetBuild(buildUri);
-    
+
         }
 
         /// <summary>
@@ -196,10 +238,10 @@ namespace TFSEventsProcessor.Providers
         public Changeset GetChangeSet(int id)
         {
             logger.Info(string.Format("Getting the changeset [{0}]", id));
-  
+
             var versionControl = (VersionControlServer)this.TfsInstance.GetService(typeof(VersionControlServer));
             return versionControl.GetChangeset(id);
-            
+
         }
 
         /// <summary>
@@ -222,7 +264,7 @@ namespace TFSEventsProcessor.Providers
             {
                 return null;
             }
-            
+
         }
 
         /// <summary>
@@ -250,7 +292,7 @@ namespace TFSEventsProcessor.Providers
             logger.Info(string.Format("Setting build argument [{0}] for build definition [{1}] to [{2}]", key, buildDefUri.ToString(), value.ToString()));
 
             var service = (IBuildServer)this.TfsInstance.GetService(typeof(IBuildServer));
-        
+
             var def = service.GetBuildDefinition(buildDefUri);
             var process = Microsoft.TeamFoundation.Build.Workflow.WorkflowHelpers.DeserializeProcessParameters(def.ProcessParameters);
 
@@ -281,6 +323,6 @@ namespace TFSEventsProcessor.Providers
 
             return service.QueryBuilds(teamProjectName);
         }
-        
+
     }
 }

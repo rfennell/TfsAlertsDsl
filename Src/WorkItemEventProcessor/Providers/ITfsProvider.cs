@@ -98,5 +98,20 @@ namespace TFSEventsProcessor.Providers
         /// </summary>
         /// <param name="wi">The work item</param>
         void UpdateWorkItem(WorkItem wi);
+
+        /// <summary>
+        /// Returns the parent work item with the specified work item
+        /// </summary>
+        /// <param name="wi">The work item</param>
+        /// <returns>The parent work item</returns>
+        WorkItem GetParentWorkItem(WorkItem wi);
+
+        /// <summary>
+        /// Returns the child work items with the specified work item
+        /// </summary>
+        /// <param name="wi">The work item</param>
+        /// <returns>The parent work item</returns>
+        WorkItem[] GetChildWorkItems(WorkItem wi);
+
     }
 }

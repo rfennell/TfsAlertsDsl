@@ -141,10 +141,19 @@
     <Compile Include="Helpers\TestProviderFactory.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Dsl\tfs\loadchildwi.py">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Dsl\tfs\loadparentwi.py">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Dsl\tfs\PBI.htm">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Dsl\tfs\EmailTemplate.htm">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Dsl\tfs\changeparentworkitemstate.py">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Dsl\tfs\setbuildretensionbyquality.py">

@@ -191,6 +191,26 @@ namespace TFSEventsProcessor.Dsl
         }
 
         /// <summary>
+        /// Gets a parent work item from TFS
+        /// </summary>
+        /// <param name="wi">The work item to find parent for</param>
+        /// <returns>A workitem</returns>
+        public WorkItem GetParentWorkItem(WorkItem wi)
+        {
+            return this.iTfsProvider.GetParentWorkItem(wi);
+        }
+
+        /// <summary>
+        /// Gets the child work items for a work item from TFS
+        /// </summary>
+        /// <param name="wi">The work item to find parent for</param>
+        /// <returns>A workitem</returns>
+        public WorkItem[] GetChildWorkItems(WorkItem wi)
+        {
+            return this.iTfsProvider.GetChildWorkItems(wi);
+        }
+
+        /// <summary>
         /// Gets the details of a build
         /// </summary>
         /// <param name="buildUri">The build url</param>

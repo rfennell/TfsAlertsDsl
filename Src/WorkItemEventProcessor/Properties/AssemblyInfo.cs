@@ -37,7 +37,7 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.1.0")]
-[assembly: AssemblyFileVersion("1.0.1.0")]
+[assembly: AssemblyVersion("1.0.2.0")]
+[assembly: AssemblyFileVersion("1.0.2.0")]
 [assembly: InternalsVisibleTo("TFSEventsProcessor.Tests, PublicKey=0024000004800000940000000602000000240000525341310004000001000100ddc1a264b9f2e2675fb32ce14455dabc370d4313331b9ad2015b42b5cffac73f229c8e504c8efe7d27bcdcb2ae29b0e85e1f62b0c2a32619072eb60c2eba23b09bdcc68ac322afb24d52992a307e55784fff32c01b911e010414f4aa0cf5f957f0846c8f798a4054288926041d23ca843627fb68a8f094dd9797c2c5101dd8ac")]
 [assembly: System.CLSCompliant(true)]
