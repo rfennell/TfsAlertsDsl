@@ -77,27 +77,31 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Lib\IronPython.2.7.3\lib\Net40\Microsoft.Scripting.Metadata.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.TeamFoundation.Build.Client, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+    <Reference Include="Microsoft.TeamFoundation.Build.Client, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Lib\Microsoft.TeamFoundation.Build.Client.dll</HintPath>
-      <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.TeamFoundation.Build.Workflow, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\Lib\Microsoft.TeamFoundation.Build.Workflow.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.TeamFoundation.Client, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+    <Reference Include="Microsoft.TeamFoundation.Client, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Lib\Microsoft.TeamFoundation.Client.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.TeamFoundation.VersionControl.Client, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
-    <Reference Include="Microsoft.TeamFoundation.VersionControl.Client.11.0.0.0.Fakes">
-      <HintPath>FakesAssemblies\Microsoft.TeamFoundation.VersionControl.Client.11.0.0.0.Fakes.dll</HintPath>
+    <Reference Include="Microsoft.TeamFoundation.VersionControl.Client, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Lib\Microsoft.TeamFoundation.VersionControl.Client.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.TeamFoundation.WorkItemTracking.Client, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+    <Reference Include="Microsoft.TeamFoundation.VersionControl.Client.12.0.0.0.Fakes">
+      <HintPath>FakesAssemblies\Microsoft.TeamFoundation.VersionControl.Client.12.0.0.0.Fakes.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.TeamFoundation.WorkItemTracking.Client, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Lib\Microsoft.TeamFoundation.WorkItemTracking.Client.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.TeamFoundation.WorkItemTracking.Client.11.0.0.0.Fakes">
-      <HintPath>FakesAssemblies\Microsoft.TeamFoundation.WorkItemTracking.Client.11.0.0.0.Fakes.dll</HintPath>
+    <Reference Include="Microsoft.TeamFoundation.WorkItemTracking.Client.12.0.0.0.Fakes">
+      <HintPath>FakesAssemblies\Microsoft.TeamFoundation.WorkItemTracking.Client.12.0.0.0.Fakes.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.TeamFoundation.WorkItemTracking.Client.DataStoreLoader, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Lib\Microsoft.TeamFoundation.WorkItemTracking.Client.DataStoreLoader.dll</HintPath>
     </Reference>
     <Reference Include="Moq, Version=4.1.1308.2120, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -206,6 +210,8 @@
     <Content Include="Dsl\tfs\updatewi.py">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Fakes Include="Fakes\Microsoft.TeamFoundation.VersionControl.Client01.fakes" />
+    <Fakes Include="Fakes\Microsoft.TeamFoundation.WorkItemTracking.Client01.fakes" />
     <None Include="packages.config" />
     <None Include="Project.snk" />
   </ItemGroup>
