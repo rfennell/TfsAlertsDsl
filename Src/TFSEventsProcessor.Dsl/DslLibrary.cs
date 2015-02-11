@@ -365,24 +365,31 @@ namespace TFSEventsProcessor.Dsl
            var argumentName = "MinorVersion";
            var value = this.TfsProvider.GetBuildArgument(build.BuildDefinitionUri, argumentName);
 
-           LogInfoMessage(string.Format("Arguement {0} old value is {1}", argumentName, value.ToString()));
-
-           // as we are incrementing we need to treat this an Int
-           // the most likey field to be updating is on for the TFSVersion activity which
-           // stores the values as strings, so we need to parse it
-           var number = -1;
-           if (value != null)
+           if (value == null)
            {
-               int.TryParse(value.ToString(), out number);
+               LogInfoMessage(string.Format("Argument {0} is not set. This could be because it is not used in this build template, or because it only has a default value not an explicitaly set one", argumentName));
            }
-           number++;
+           else
+           {
+               LogInfoMessage(string.Format("Argument {0} old value is {1}", argumentName, value.ToString()));
 
-           LogInfoMessage(string.Format("Updated argument {0} value is {1}", argumentName, number));
+               // as we are incrementing we need to treat this an Int
+               // the most likey field to be updating is on for the TFSVersion activity which
+               // stores the values as strings, so we need to parse it
+               var number = -1;
+               if (value != null)
+               {
+                   int.TryParse(value.ToString(), out number);
+               }
+               number++;
 
-           this.TfsProvider.SetBuildArgument(build.BuildDefinitionUri, argumentName, number.ToString(CultureInfo.InvariantCulture));
+               LogInfoMessage(string.Format("Updated argument {0} value is {1}", argumentName, number));
 
-           // we also use the start date so this should be reset start date
-           this.TfsProvider.SetBuildArgument(build.BuildDefinitionUri, "VersionStartDate", DateTime.Today);
+               this.TfsProvider.SetBuildArgument(build.BuildDefinitionUri, argumentName, number.ToString(CultureInfo.InvariantCulture));
+
+               // we also use the start date so this should be reset start date
+               this.TfsProvider.SetBuildArgument(build.BuildDefinitionUri, "VersionStartDate", DateTime.Today);
+           }
        }
     }
 }
