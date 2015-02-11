@@ -9,7 +9,7 @@ if sys.argv[0] == "WorkItemEvent" :
         LogInfoMessage("Work item '" + str(wi.Id) + "' has parent '" + str(parentwi.Id) + "'")
 
         results = [c for c in GetChildWorkItems(parentwi) if c.State != "Done"]
-        if len(results) == 0:
+        if  len(results) == 0 :
             LogInfoMessage("All child work items are 'Done'")
             parentwi.State = "Done"
             UpdateWorkItem(parentwi)
