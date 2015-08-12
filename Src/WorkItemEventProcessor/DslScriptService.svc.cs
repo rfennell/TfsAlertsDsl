@@ -29,10 +29,21 @@ namespace TFSEventsProcessor
         /// Instance of TFS provider
         /// </summary>
         private Providers.ITfsProvider iTfsProvider;
+        
         /// <summary>
         /// The script to run
         /// </summary>
         private string scriptFile;
+
+        /// <summary>
+        /// Folder to scan for DSL assemblies
+        /// </summary>
+        private string dslFolder;
+
+        /// <summary>
+        /// Folder to look for scripts in
+        /// </summary>
+        private string scriptFolder;
 
         /// <summary>
         /// Default constructor
@@ -45,6 +56,8 @@ namespace TFSEventsProcessor
                 System.Configuration.ConfigurationManager.AppSettings["EmailDomain"]);
 
             this.scriptFile = System.Configuration.ConfigurationManager.AppSettings["ScriptFile"];
+            this.dslFolder = System.Configuration.ConfigurationManager.AppSettings["DSLFolder"];
+            this.scriptFolder = System.Configuration.ConfigurationManager.AppSettings["ScriptFolder"];
 
             this.iTfsProvider = new Providers.TfsProvider();
         }
@@ -55,11 +68,13 @@ namespace TFSEventsProcessor
         /// <param name="iEmailProvider">Email provider</param>
         /// <param name="iTfsProvider">Smpt Provider</param>
         /// <param name="scriptFile">The script file to run</param>
-        public DslScriptService(Providers.IEmailProvider iEmailProvider, Providers.ITfsProvider iTfsProvider, string scriptFile)
+        /// <param name="dslFolder">Folder to scan for DSL assemblies</param>
+        public DslScriptService(Providers.IEmailProvider iEmailProvider, Providers.ITfsProvider iTfsProvider, string scriptFile, string dslFolder)
         {
             this.iEmailProvider = iEmailProvider;
             this.iTfsProvider = iTfsProvider;
             this.scriptFile = scriptFile;
+            this.dslFolder = dslFolder;
         }
 
         /// <summary>
@@ -133,8 +148,8 @@ namespace TFSEventsProcessor
 
                 var engine = new TFSEventsProcessor.Dsl.DslProcessor();
                 engine.RunScript(
-                    System.Configuration.ConfigurationManager.AppSettings["DSLFolder"],
-                    System.Configuration.ConfigurationManager.AppSettings["ScriptFolder"],
+                    this.dslFolder,
+                    this.scriptFolder ,
                     this.scriptFile, 
                     args, 
                     this.iTfsProvider, 

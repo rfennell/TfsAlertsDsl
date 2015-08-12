@@ -229,6 +229,13 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <PropertyGroup>
+    <PostBuildEvent>echo .
+echo Copying DSL assemblies to subfolder to avoid load errors in unit tests
+echo .
+copy $(TargetDir)\TFSEventsProcessor.Dsl.dll $(TargetDir)\dsl\TFSEventsProcessor.Dsl.dll /y
+copy $(TargetDir)\Sample.Dsl.dll $(TargetDir)\dsl\Sample.Dsl.dll /y</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

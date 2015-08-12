@@ -117,7 +117,7 @@
 
                 // act
                 engine.RunScript(
-                    ".",
+                    @".\dsl",
                     @"dsl\tfs",
                     "sendtemplatedemail.py",
                     args,

@@ -149,7 +149,7 @@ namespace TFSEventsProcessor.Tests.Dsl
             var engine = new TFSEventsProcessor.Dsl.DslProcessor();
 
             // act
-            engine.RunScript(".", @"dsl\scripting","args.py", args, tfsProvider.Object, emailProvider.Object,string.Empty);
+            engine.RunScript(@".\dsl", @"dsl\scripting","args.py", args, tfsProvider.Object, emailProvider.Object,string.Empty);
 
             // assert
 

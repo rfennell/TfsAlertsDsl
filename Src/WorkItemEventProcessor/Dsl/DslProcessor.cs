@@ -39,7 +39,7 @@ namespace TFSEventsProcessor.Dsl
         /// <param name="iEmailProvider">The email provider</param>
         public void RunScript(string scriptname, Providers.ITfsProvider iTfsProvider, Providers.IEmailProvider iEmailProvider)
         {
-            this.RunScript(".", ".", scriptname, null, iTfsProvider, iEmailProvider, string.Empty);
+            this.RunScript(@".\dsl", ".", scriptname, null, iTfsProvider, iEmailProvider, string.Empty);
         }
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace TFSEventsProcessor.Dsl
         /// <param name="iEmailProvider">The email provider</param>
         public void RunScript(string scriptname, Dictionary<string, object> args, Providers.ITfsProvider iTfsProvider, Providers.IEmailProvider iEmailProvider)
         {
-            this.RunScript(".", ".", scriptname, args, iTfsProvider, iEmailProvider, string.Empty);
+            this.RunScript(@".\dsl", ".", scriptname, args, iTfsProvider, iEmailProvider, string.Empty);
         }
 
         /// <summary>

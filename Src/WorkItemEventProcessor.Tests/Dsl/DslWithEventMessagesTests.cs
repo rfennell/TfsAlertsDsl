@@ -16,7 +16,7 @@ namespace TFSEventsProcessor.Tests.Dsl
             var alertMessage = TestData.DummyWorkItemChangedAlertXml();
             var emailProvider = new Moq.Mock<IEmailProvider>();
             var tfsProvider = new Moq.Mock<ITfsProvider>();
-            var sut = new DslScriptService(emailProvider.Object, tfsProvider.Object, @"dsl\tfs\fullscript.py");
+            var sut = new DslScriptService(emailProvider.Object, tfsProvider.Object, @"dsl\tfs\fullscript.py", @".\dsl");
 
             // redirect the console
             var consoleOut = Helpers.Logging.RedirectConsoleOut();
@@ -36,7 +36,7 @@ namespace TFSEventsProcessor.Tests.Dsl
             var alertMessage = TestData.DummyBuildStatusChangedAlertXmlWithQualityChange();
             var emailProvider = new Moq.Mock<IEmailProvider>();
             var tfsProvider = new Moq.Mock<ITfsProvider>();
-            var sut = new DslScriptService(emailProvider.Object, tfsProvider.Object, @"dsl\tfs\fullscript.py");
+            var sut = new DslScriptService(emailProvider.Object, tfsProvider.Object, @"dsl\tfs\fullscript.py", @".\dsl");
 
             // redirect the console
             var consoleOut = Helpers.Logging.RedirectConsoleOut();
@@ -56,7 +56,7 @@ namespace TFSEventsProcessor.Tests.Dsl
             var alertMessage = TestData.DummyCheckInAlertXml();
             var emailProvider = new Moq.Mock<IEmailProvider>();
             var tfsProvider = new Moq.Mock<ITfsProvider>();
-            var sut = new DslScriptService(emailProvider.Object, tfsProvider.Object, @"dsl\tfs\fullscript.py");
+            var sut = new DslScriptService(emailProvider.Object, tfsProvider.Object, @"dsl\tfs\fullscript.py", @".\dsl");
 
             // redirect the console
             var consoleOut = Helpers.Logging.RedirectConsoleOut();
