@@ -363,8 +363,8 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Project.snk" />
-    <None Include="Properties\PublishProfiles\File system.pubxml" />
-    <None Include="Properties\PublishProfiles\Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\FileSystem.pubxml" />
+    <None Include="Properties\PublishProfiles\MSDeploy.pubxml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
