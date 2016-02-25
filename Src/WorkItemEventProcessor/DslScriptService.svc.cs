@@ -19,7 +19,7 @@ namespace TFSEventsProcessor
         /// <summary>
         /// Tag to use for Build event
         /// </summary>
-        private enum EventTypes { BuildEvent, CheckInEvent, WorkItemEvent };
+        internal enum EventTypes { BuildEvent, CheckInEvent, WorkItemEvent };
 
         /// <summary>
         /// Instance of nLog interface
@@ -177,7 +177,7 @@ namespace TFSEventsProcessor
         /// <param name="type">The event type</param>
         /// <param name="defaultScript">Default script name</param>
         /// <returns></returns>
-        private static string GetScriptName(string type, string defaultScript)
+        internal static string GetScriptName(string type, string defaultScript)
         {
             var retItem = defaultScript;
             if (string.IsNullOrEmpty(defaultScript))
