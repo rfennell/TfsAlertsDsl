@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using NLog;
 using TFSEventsProcessor.Helpers;
+using TFSEventsProcessor.Providers;
 
 namespace TFSEventsProcessor
 {
@@ -15,6 +16,11 @@ namespace TFSEventsProcessor
     /// </summary>
     public class DslScriptService : IDslScriptService
     {
+        /// <summary>
+        /// Tag to use for Build event
+        /// </summary>
+        private enum EventTypes { BuildEvent, CheckInEvent, WorkItemEvent };
+
         /// <summary>
         /// Instance of nLog interface
         /// </summary>
@@ -29,7 +35,7 @@ namespace TFSEventsProcessor
         /// Instance of TFS provider
         /// </summary>
         private Providers.ITfsProvider iTfsProvider;
-        
+
         /// <summary>
         /// The script to run
         /// </summary>
@@ -102,7 +108,7 @@ namespace TFSEventsProcessor
                 try
                 {
                     var buildDetails = EventXmlHelper.GetBuildStatusChangedAlertFields(eventXml);
-                    argItems = new[] { "BuildEvent", buildDetails.BuildUri.ToString() };
+                    argItems = new[] { EventTypes.BuildEvent.ToString(), buildDetails.BuildUri.ToString() };
                     logger.Info(string.Format(
                         "TFSEventsProcessor: DslScriptService Event being processed for Build:{0}",
                         buildDetails.BuildUri));
@@ -120,7 +126,7 @@ namespace TFSEventsProcessor
                         "System.Id");
                     if (workItemId > 0)
                     {
-                        argItems = new[] { "WorkItemEvent", workItemId.ToString() };
+                        argItems = new[] { EventTypes.WorkItemEvent.ToString(), workItemId.ToString() };
                         logger.Info(
                             string.Format("TFSEventsProcessor: DslScriptService Event being processed for WI:{0}", workItemId));
                     }
@@ -129,7 +135,7 @@ namespace TFSEventsProcessor
                         try
                         {
                             var checkInDetails = EventXmlHelper.GetCheckInDetails(eventXml);
-                            argItems = new[] { "CheckInEvent", checkInDetails.Changeset.ToString() };
+                            argItems = new[] { EventTypes.CheckInEvent.ToString(), checkInDetails.Changeset.ToString() };
                             logger.Info(
                                 string.Format(
                                     "TFSEventsProcessor: DslScriptService Event being processed for Checkin:{0}",
@@ -149,10 +155,10 @@ namespace TFSEventsProcessor
                 var engine = new TFSEventsProcessor.Dsl.DslProcessor();
                 engine.RunScript(
                     this.dslFolder,
-                    this.scriptFolder ,
-                    this.scriptFile, 
-                    args, 
-                    this.iTfsProvider, 
+                    this.scriptFolder,
+                    GetScriptName(argItems[0], this.scriptFile),
+                    args,
+                    this.iTfsProvider,
                     this.iEmailProvider,
                     eventXml);
 
@@ -163,6 +169,26 @@ namespace TFSEventsProcessor
                 this.DumpException(ex);
             }
 
+        }
+
+        /// <summary>
+        /// Returns the name of the script to run
+        /// </summary>
+        /// <param name="type">The event type</param>
+        /// <param name="defaultScript">Default script name</param>
+        /// <returns></returns>
+        private static string GetScriptName(string type, string defaultScript)
+        {
+            var retItem = defaultScript;
+            if (string.IsNullOrEmpty(defaultScript))
+            {
+                retItem = string.Format("{0}.py", type.ToString());
+            }
+            logger.Info(
+                        string.Format(
+                            "TFSEventsProcessor: DslScriptService using script file {0}",
+                            retItem));
+            return retItem;
         }
 
         /// <summary>
