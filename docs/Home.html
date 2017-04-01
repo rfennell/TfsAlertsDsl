@@ -1,0 +1,13 @@
+<div class="wikidoc">
+<h2>This project is no longer under development on Codeplex, it has been moved to&nbsp;<a href="https://github.com/rfennell/VSTSServiceHookDsl">GitHub</a>&nbsp;and is being updated to support operations via Service Hooks for used with both TFS and VSTS&nbsp;</h2>
+<p>&nbsp;</p>
+<p><strong>Project Description</strong></p>
+<p>Microsoft Team Foundation Server (TFS) provides an alerting model where given a certain condition, such as a&nbsp;check-in, work item edit or build completion,&nbsp;an email can be sent to an interest party or a call&nbsp;made to a SOAP based web service.
+ Using this SOAP model it is possible to&nbsp;provide any bespoke operations you wish that are triggered by a&nbsp;change on the TFS server.</p>
+<p>This framework is designed to ease the development of these bespoke SOAP wen services by providing helper methods for common XML processing steps and API operations such as calling back to the TFS server or accessing SMTP services.</p>
+<p>They main differentiator of this project is that it also provides a Python based DSL that allows the actual operation performed when the endpoint is called to be edited without the need to&nbsp; to rebuild and redeploy the bespoke service.&nbsp;Operations
+ are defined by script such as show below</p>
+<pre>import sys<br># Expect 2 args the event type and a value unique ID<br>LogInfoMessage( &quot;The following arguments were passed&quot; )<br>LogInfoMessage( sys.argv )<br>if sys.argv[0] == &quot;BuildEvent&quot; :<br>   LogInfoMessage (&quot;A build event &quot; &#43; sys.argv[1])<br>   # a sample for using the DSL to create a work item is<br>   #fields = {&quot;Title&quot;: &quot;The Title&quot;,&quot;Effort&quot;: 2, &quot;Description&quot;: &quot;The desc of the bug&quot;}<br>   #teamproject = &quot;Scrum (TFVC)&quot;<br>   #wi = CreateWorkItem(teamproject ,&quot;bug&quot;,fields)<br>   #LogInfoMessage (&quot;Work item '&quot; &#43; str(wi.Id) &#43; &quot;' has been created '&quot; &#43; wi.Title &#43;&quot;'&quot;)<br>elif sys.argv[0] == &quot;WorkItemEvent&quot; :<br>   LogInfoMessage (&quot;A wi event &quot; &#43; sys.argv[1])<br>elif sys.argv[0] == &quot;CheckInEvent&quot; :<br>   LogInfoMessage (&quot;A checkin event &quot; &#43; sys.argv[1])<br>else:
+   LogInfoMessage (&quot;Was not expecting to get here&quot;)</pre>
+<p>&nbsp;</p>
+</div><div class="ClearBoth"></div>

@@ -1,0 +1,25 @@
+<div class="wikidoc">
+<h3><em>Development</em></h3>
+<p>Visual Studio Premium or Enterprise is required as the test project uses Microsoft Fakes, lower SKUs of Visual Studio can be used as long as any tests using Fakes are disabled</p>
+<p>The solution contains the following</p>
+<ul>
+<li>A WCF service project has been created which is configured to be deployed as an IIS Web deployment package. As this has been built using WCF it is plausible to rebuild it to be deployed in other forms such as a Windows Service or a self hosted EXE.
+<br>
+This project contains the code to load the DSL assembly dynamically at runtime using
+<a href="http://msdn.microsoft.com/en-us/library/dd460648(v=vs.110).aspx">MEF</a>
+</li><li>A pair of class libraries, one that holds the actual TFS&nbsp;DSL definitions, the other is a sample DSL used to test loading multiple libraries. These&nbsp;two assemblies are basically wrappers for methods within the WCF project. In the case of the TFS
+ DSL all the actual TFS API calls are with the WCF service project. </li><li>All the unit tests are in their own project. They use nUnit, this was used over MSTest because MSTest changes the location it tries to load external files (such as scripts) from depending if it is run in VS or a build sever. nUnit does not suffer this problem.
+ MOQ and Microsoft Fakes are used to provide a mocking function for C# interfaces and for the TFS API objects respectively. Fakes have to be used for the TFS API calls because we need to fake out objects with no public constructor.
+</li></ul>
+<p>The project builds against the TFS 2012 API; In the lib folder can be found both the relevant 2012, 2013 or 2015 reference DLLs. Copying either set to the root lib folder and rebuilding should be all required to build the package for that version. The current
+ DSL calls only make use of API calls available with TFS 2012, so there is no reason the 2012 version should not work with a 2010 thru 2015 server.</p>
+<p>All other assembly references are handled via Nuget</p>
+<h3>Note about changes in VS 2015 commit</h3>
+<p>The unit test project was modified to copy the test DSL assemblies to a sub folder as a post build step. This means that the MEF loader only has to try to load valid DSL assemblies if it is pointed at this folder, as opposed to scanning the whole contents
+ of the bin folder.</p>
+<p>In previous version of VS this did not appear to be an issue, however with VS 2015 (maybe due to changes in MEF?) I was getting a lot of ReflectionTypeLoad exceptions. I could fix them by adding the requested DLLs to the test project references (or copying
+ them to the bin folder), but it was getting ridiculous following the whole loader chains for every DLL referenced by the tester.</p>
+<p>Moving the DSL assemblies to their own folder was much easier, and already a supported feature. The alternative would be to create a safe loader helper, some like this&nbsp;<a href="http://stackoverflow.com/questions/4144683/handle-reflectiontypeloadexception-during-mef-composition">answer
+ on stackOverflow</a>.</p>
+<p>The configuration guidance will also be altered to reflect this recommendation</p>
+</div><div class="ClearBoth"></div>
